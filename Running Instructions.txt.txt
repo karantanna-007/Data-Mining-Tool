@@ -1,0 +1,23 @@
+
+Start the Backend
+
+
+cd backend
+# Activate virtual environment
+datamining_env\Scripts\activate  # Windows
+source datamining_env/bin/activate  # Mac/Linux
+
+# Run migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Start Django server
+python manage.py runserver
+
+
+
+Start the Frontend
+
+cd frontend
+npm install
+npm start
