@@ -55,3 +55,51 @@ class ClassificationResult(models.Model):
     
     def __str__(self):
         return f"{self.dataset.name} - {self.algorithm}"
+
+class ClusteringResult(models.Model):
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='clustering_results')
+    algorithm = models.CharField(max_length=100)  # e.g., 'kmeans', 'kmedoid'
+    parameters = models.JSONField(default=dict)  # Store algorithm parameters
+    n_clusters = models.IntegerField(default=3)
+    silhouette_score = models.FloatField(null=True, blank=True)
+    davies_bouldin_score = models.FloatField(null=True, blank=True)
+    cluster_labels = models.JSONField(default=list)  # Store cluster assignments
+    cluster_centers = models.JSONField(default=dict, null=True, blank=True)  # For k-means
+    inertia = models.FloatField(null=True, blank=True)  # For k-means
+    result_data = models.JSONField(default=dict)  # Store detailed results
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.dataset.name} - {self.algorithm} (k={self.n_clusters})"
+
+class AssociationRuleResult(models.Model):
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='association_results')
+    min_support = models.FloatField(default=0.1)
+    min_confidence = models.FloatField(default=0.5)
+    frequent_itemsets = models.JSONField(default=list)  # Store frequent itemsets
+    rules = models.JSONField(default=list)  # Store association rules with support, confidence, lift
+    result_data = models.JSONField(default=dict)  # Store detailed results
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.dataset.name} - Association Rules (sup={self.min_support}, conf={self.min_confidence})"
+
+class WebMiningResult(models.Model):
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='webmining_results')
+    algorithm = models.CharField(max_length=100)  # e.g., 'pagerank', 'hits'
+    parameters = models.JSONField(default=dict)  # Store algorithm parameters
+    scores = models.JSONField(default=dict)  # Store node scores
+    result_data = models.JSONField(default=dict)  # Store detailed results
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.dataset.name} - {self.algorithm}"
